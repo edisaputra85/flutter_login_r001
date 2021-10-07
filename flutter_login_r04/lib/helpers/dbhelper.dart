@@ -45,4 +45,13 @@ class DbHelper {
     int count = await db.insert('users', object.toMap());
     return count;
   }
+
+  //Read
+  Future<List<Map<String, dynamic>>> selectUser(
+      String username, String password) async {
+    Database db = await this.getDatabase();
+    var mapList = await db.query('users',
+        where: "username='$username' AND password='$password'");
+    return mapList;
+  }
 }

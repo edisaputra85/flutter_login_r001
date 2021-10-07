@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_login_r04/helpers/dbhelper.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -8,6 +9,9 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final passwordController = TextEditingController();
+  final usernameController = TextEditingController();
+
+  DbHelper dbHelper = new DbHelper();
 
   bool validateLogin() {
     FormState form = this.formKey.currentState;
@@ -48,6 +52,7 @@ class _LoginState extends State<Login> {
                                 child: Column(
                                   children: [
                                     TextFormField(
+                                        controller: usernameController,
                                         decoration: InputDecoration(
                                           hintText: 'username',
                                           labelText: 'Username',
@@ -80,10 +85,24 @@ class _LoginState extends State<Login> {
                               child: FloatingActionButton(
                             onPressed: () {
                               validateLogin();
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  content: Text(
-                                      "Your password is ${passwordController.text}"),
-                                  backgroundColor: Colors.green));
+                              //cek data user pada tabel users
+                              dbHelper
+                                  .selectUser(usernameController.text,
+                                      passwordController.text)
+                                  .then((mapList) {
+                                print(mapList.length);
+                                if (mapList.length > 0) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text("Login Sukses"),
+                                          backgroundColor: Colors.green));
+                                  Navigator.pushNamed(context, '/dashboard');
+                                } else
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text("User tidak ditemukan"),
+                                          backgroundColor: Colors.red));
+                              });
                             },
                             child: Icon(Icons.login),
                           ))

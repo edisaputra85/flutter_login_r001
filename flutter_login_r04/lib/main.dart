@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dashboard.dart';
 import 'login.dart';
 import 'register.dart';
 
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/login': (context) => Login(),
           '/register': (context) => Register(),
+          '/dashboard': (context) => Dashboard(),
         });
   }
 }
