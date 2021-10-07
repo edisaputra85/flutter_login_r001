@@ -85,7 +85,19 @@ class _RegisterState extends State<Register> {
                                   emailController.text);
 
                               //insert objek user ke dalam tabel users di SQLite
-                              dbHelper.insertUser(user);
+                              dbHelper.insertUser(user).then((count) {
+                                if (count > 0) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text("Registrasi Sukses"),
+                                          backgroundColor: Colors.green));
+                                  Navigator.pushNamed(context, '/login');
+                                } else
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text("Reistrasi gagal"),
+                                          backgroundColor: Colors.red));
+                              });
                             },
                             child: Icon(Icons.send),
                           ))
