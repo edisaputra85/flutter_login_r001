@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_login_r04/helpers/dbhelper.dart';
+
+import 'models/user.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -9,6 +12,8 @@ class _RegisterState extends State<Register> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
+
+  DbHelper dbHelper = new DbHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +76,17 @@ class _RegisterState extends State<Register> {
                           ),
                           Expanded(
                               child: FloatingActionButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              //form validasi
+                              //baca isian form dan simpan ke objek user
+                              User user = new User(
+                                  usernameController.text,
+                                  passwordController.text,
+                                  emailController.text);
+
+                              //insert objek user ke dalam tabel users di SQLite
+                              dbHelper.insertUser(user);
+                            },
                             child: Icon(Icons.send),
                           ))
                         ])),

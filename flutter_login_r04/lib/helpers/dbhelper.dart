@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:async';
+import 'package:flutter_login_r04/models/user.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -35,5 +38,11 @@ class DbHelper {
   Future<Database> getDatabase() async {
     if (_database == null) _database = await initDb();
     return _database;
+  }
+
+  Future<int> insertUser(User object) async {
+    Database db = await this.getDatabase();
+    int count = await db.insert('users', object.toMap());
+    return count;
   }
 }
