@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login_r04/user.dart';
-import './dbhelper.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -8,9 +6,6 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  DbHelper dbHelper = new DbHelper();
-  User user;
-
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
@@ -76,28 +71,7 @@ class _RegisterState extends State<Register> {
                           ),
                           Expanded(
                               child: FloatingActionButton(
-                            onPressed: () {
-                              user = new User(
-                                  usernameController.text,
-                                  passwordController.text,
-                                  emailController.text);
-                              try {
-                                dbHelper.insertUser(user);
-                              } catch (e) {
-                                print('insert gagal');
-                              }
-
-                              Future<List<Map<String, dynamic>>> listMap =
-                                  dbHelper.selectUser(usernameController.text,
-                                      passwordController.text);
-                              listMap.then((myListMap) => {
-                                    myListMap.forEach((element) {
-                                      User userFeedback =
-                                          new User.fromMap(element);
-                                      print(element);
-                                    })
-                                  });
-                            },
+                            onPressed: () {},
                             child: Icon(Icons.send),
                           ))
                         ])),
