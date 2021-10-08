@@ -44,7 +44,9 @@ class _DashboardState extends State<Dashboard> {
           ListTile(
             leading: Icon(Icons.settings),
             title: Text("Settings"),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, '/settings');
+            },
           ),
           ListTile(
             leading: Icon(Icons.logout),
