@@ -115,7 +115,21 @@ class _LoginState extends State<Login> {
                     onPressed: () {
                       Navigator.pushNamed(context, '/register');
                     },
-                    child: Text('Register'))
+                    child: Text('Register')),
+                ElevatedButton(
+                    onPressed: () {
+                      dbHelper.selectAllUser().then((mapList) {
+                        mapList.forEach((element) {
+                          print(element);
+                        });
+                      });
+                    },
+                    child: Text('Print All Users')),
+                ElevatedButton(
+                    onPressed: () {
+                      dbHelper.deleteAllUsers();
+                    },
+                    child: Text('Delete All Users'))
               ],
             ),
           ))),
