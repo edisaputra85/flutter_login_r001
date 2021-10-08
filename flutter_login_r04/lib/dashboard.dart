@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_login_r04/helpers/dbhelper.dart';
 
 import 'models/user.dart';
 
@@ -8,15 +9,37 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  User user;
+  int userId;
+
+  void reloaduserData() {
+    DbHelper dbHelper = new DbHelper();
+    dbHelper.selectUserOnId(userId).then((mapList) {
+      mapList.forEach((element) {
+        setState(() {
+          user = User.fromMap(element);
+        });
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     //terima argument dalam bentuk map
     Map<String, dynamic> userLogin = ModalRoute.of(context).settings.arguments;
-    User user = userLogin['user'];
-    int userId = userLogin['userId'];
+    userId = userLogin['userId'];
+    reloaduserData();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Dashboard"),
+        title: Text("Dashboard "),
+        actions: [
+          IconButton(
+              onPressed: () {
+                reloaduserData();
+              },
+              icon: Icon(Icons.refresh))
+        ],
       ),
       drawer: Drawer(
           child: ListView(
@@ -36,6 +59,10 @@ class _DashboardState extends State<Dashboard> {
                     "User Id : $userId",
                     style: TextStyle(fontSize: 16),
                   ),
+                  Text(
+                    "User Email : " + user.email,
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ],
               ),
               decoration: BoxDecoration(
@@ -45,7 +72,9 @@ class _DashboardState extends State<Dashboard> {
             leading: Icon(Icons.settings),
             title: Text("Settings"),
             onTap: () {
-              Navigator.pushNamed(context, '/settings');
+              Navigator.pop(context); //tutup drawer
+              Navigator.pushNamed(context, '/settings',
+                  arguments: userId); //navigasi ke settings
             },
           ),
           ListTile(

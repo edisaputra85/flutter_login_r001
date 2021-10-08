@@ -32,6 +32,8 @@ class DbHelper {
         "CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT,username TEXT NOT NULL UNIQUE,password TEXT NOT NULL,email TEXT NOT NULL UNIQUE)");
     await db.execute(
         "CREATE TABLE profiles (id INTEGER PRIMARY KEY AUTOINCREMENT,id_user INTEGER NOT NULL, fullname TEXT,phone TEXT,address TEXT)");
+    await db.execute(
+        "CREATE TABLE tugas (id INTEGER PRIMARY KEY AUTOINCREMENT,matakuliah Text NOT NULL, uraian_tugas TEXT NOT NULL,deadline DATE NOT NULL)");
   }
 
   //method untuk mengecek apakah DB sudah ada? kalau belum create DB, selanjutnya dia return objek database
@@ -66,5 +68,28 @@ class DbHelper {
     Database db = await this.getDatabase();
     int count = await db.delete('users');
     return count;
+  }
+
+  Future<int> updateUserPassword(int idUser, String password) async {
+    Database db = await this.getDatabase();
+    //pakai rawupdate tidak perlu tipe objek map
+    int count = await db.rawUpdate(
+        'UPDATE users SET password = ? WHERE id = ?', ['$password', '$idUser']);
+    return count;
+  }
+
+  Future<int> updateUserEmail(int idUser, String email) async {
+    Database db = await this.getDatabase();
+    //pakai rawupdate tidak perlu tipe objek map
+    int count = await db.rawUpdate(
+        'UPDATE users SET email = ? WHERE id = ?', ['$email', '$idUser']);
+    return count;
+  }
+
+  //Read
+  Future<List<Map<String, dynamic>>> selectUserOnId(int id) async {
+    Database db = await this.getDatabase();
+    var mapList = await db.query('users', where: "id='$id' ");
+    return mapList;
   }
 }

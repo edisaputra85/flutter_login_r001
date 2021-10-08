@@ -110,7 +110,6 @@ class _LoginState extends State<Login> {
                                   Navigator.pushNamed(context, '/dashboard',
                                       arguments: {
                                         'userId': userId,
-                                        'user': user
                                       });
                                 } else
                                   ScaffoldMessenger.of(context).showSnackBar(

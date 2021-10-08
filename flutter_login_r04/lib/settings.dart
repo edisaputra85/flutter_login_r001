@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'models/user.dart';
+import 'package:flutter_login_r04/helpers/dbhelper.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -8,9 +7,13 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  DbHelper dbHelper = new DbHelper();
   @override
   Widget build(BuildContext context) {
-    //terima argument dalam bentuk map
+    //terima argument dalam bentuk int
+    int userId = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       appBar: AppBar(
@@ -23,11 +26,45 @@ class _SettingsState extends State<Settings> {
             image: DecorationImage(
                 image: AssetImage('images/background.jpg'), fit: BoxFit.cover),
           ),
-          child: Center(
-              child: SingleChildScrollView(
+          child: SingleChildScrollView(
+              child: Container(
+            margin: EdgeInsets.all(20),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [],
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                TextFormField(
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                    label: Text('New Password'),
+                    hintText: 'input new password',
+                  ),
+                  obscureText: true,
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      dbHelper.updateUserPassword(
+                          userId, passwordController.text);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("update password sukses"),
+                          backgroundColor: Colors.green));
+                    },
+                    child: Text('Update Password')),
+                TextFormField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    label: Text('New Email'),
+                    hintText: 'input new email',
+                  ),
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      dbHelper.updateUserEmail(userId, emailController.text);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("update email sukses"),
+                          backgroundColor: Colors.green));
+                    },
+                    child: Text('Update Email')),
+              ],
             ),
           ))),
     );
