@@ -94,7 +94,6 @@ class _LoginState extends State<Login> {
                                   .selectUser(usernameController.text,
                                       passwordController.text)
                                   .then((mapList) {
-                                print(mapList.length);
                                 if (mapList.length > 0) {
                                   //baca record user dari maplist
                                   mapList.forEach((element) {
@@ -108,9 +107,7 @@ class _LoginState extends State<Login> {
                                   //navigator menyertakan argument dalam bentuk map
 
                                   Navigator.pushNamed(context, '/dashboard',
-                                      arguments: {
-                                        'userId': userId,
-                                      });
+                                      arguments: userId);
                                 } else
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(

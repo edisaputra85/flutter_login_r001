@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login_r04/settings.dart';
+import 'package:flutter_login_r04/tambahtugas.dart';
 import 'dashboard.dart';
 import 'login.dart';
 import 'register.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
           '/register': (context) => Register(),
           '/dashboard': (context) => Dashboard(),
           '/settings': (context) => Settings(),
+          '/tambahtugas': (context) => TambahTugas(),
         });
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login_r04/helpers/dbhelper.dart';
-
+import 'package:intl/intl.dart';
 import 'models/user.dart';
 
 class Dashboard extends StatefulWidget {
@@ -11,23 +11,98 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   User user;
   int userId;
+  List<Map<String, dynamic>> mapList;
 
   void reloaduserData() {
     DbHelper dbHelper = new DbHelper();
-    dbHelper.selectUserOnId(userId).then((mapList) {
+    dbHelper.selectUserOnId(this.userId).then((mapList) {
       mapList.forEach((element) {
         setState(() {
-          user = User.fromMap(element);
+          this.user = User.fromMap(element);
         });
       });
     });
+    dbHelper.selectAllTugas().then((mapList) {
+      setState(() {
+        this.mapList = mapList;
+      });
+    });
+  }
+
+  ListView createListView() {
+    if (this.mapList.length != null) {
+      return ListView.builder(
+        shrinkWrap:
+            true, //harus tambahkan shrinkwrap, listview tidak boleh dibungkus dengan singlechildscroolview
+        itemCount: mapList.length,
+        itemBuilder: (context, index) {
+          return Container(
+              margin: EdgeInsets.all(2),
+              child: Card(
+                child: Container(
+                  color: getColor(index),
+                  padding: EdgeInsets.all(5),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: Text('Matakuliah ')),
+                          Expanded(
+                            flex: 2,
+                            child: Text(mapList[index]['matakuliah']),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(child: Text('Deadline ')),
+                          Expanded(
+                            flex: 2,
+                            child: Text(DateFormat("dd MMMM y").format(
+                                DateTime.parse(mapList[index]['deadline']))),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(child: Text('Uraian Tugas ')),
+                          Expanded(
+                            flex: 2,
+                            child: Text(
+                              mapList[index]['uraian_tugas'],
+                              maxLines: 5,
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(child: Text('Status Tugas ')),
+                          Expanded(
+                            flex: 2,
+                            child: Text(mapList[index]['status']),
+                          )
+                        ],
+                      ),
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: ElevatedButton(
+                              onPressed: () {}, child: Text("Set Selesai")))
+                    ],
+                  ),
+                ),
+              ));
+        },
+      );
+    } else {
+      return ListView();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     //terima argument dalam bentuk map
-    Map<String, dynamic> userLogin = ModalRoute.of(context).settings.arguments;
-    userId = userLogin['userId'];
+    this.userId = ModalRoute.of(context).settings.arguments;
     reloaduserData();
 
     return Scaffold(
@@ -51,7 +126,7 @@ class _DashboardState extends State<Dashboard> {
                   Container(
                     margin: EdgeInsets.only(bottom: 15),
                     child: Text(
-                      "Welcome " + user.username,
+                      "Welcome " + this.user.username,
                       style: TextStyle(color: Colors.white, fontSize: 24),
                     ),
                   ),
@@ -93,13 +168,28 @@ class _DashboardState extends State<Dashboard> {
             image: DecorationImage(
                 image: AssetImage('images/background.jpg'), fit: BoxFit.cover),
           ),
-          child: Center(
-              child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [],
-            ),
-          ))),
+          child: Container(
+            margin: EdgeInsets.all(10),
+            child: createListView(),
+          )),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/tambahtugas', arguments: userId);
+        },
+        child: Icon(
+          Icons.add,
+        ),
+        backgroundColor: Colors.red,
+      ),
     );
+  }
+
+  Color getColor(int index) {
+    if (this.mapList[index]['status'] == 'belum')
+      return Colors.orange;
+    else if (this.mapList[index]['status'] == 'selesai')
+      return Colors.green;
+    else
+      return Colors.red;
   }
 }
