@@ -110,4 +110,12 @@ class DbHelper {
     var mapList = await db.query('tugas');
     return mapList;
   }
+
+  Future<int> updateStatusTugas(int id, String status) async {
+    Database db = await this.getDatabase();
+    //pakai rawupdate tidak perlu tipe objek map
+    int count = await db.rawUpdate(
+        'UPDATE tugas SET status = ? WHERE id = ?', ['$status', '$id']);
+    return count;
+  }
 }

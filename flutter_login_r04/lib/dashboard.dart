@@ -12,9 +12,9 @@ class _DashboardState extends State<Dashboard> {
   User user;
   int userId;
   List<Map<String, dynamic>> mapList;
+  DbHelper dbHelper = new DbHelper();
 
   void reloaduserData() {
-    DbHelper dbHelper = new DbHelper();
     dbHelper.selectUserOnId(this.userId).then((mapList) {
       mapList.forEach((element) {
         setState(() {
@@ -87,7 +87,13 @@ class _DashboardState extends State<Dashboard> {
                       Container(
                           alignment: Alignment.centerLeft,
                           child: ElevatedButton(
-                              onPressed: () {}, child: Text("Set Selesai")))
+                              onPressed: () {
+                                //update record tugas berdasarkan id menjadi selesai dan set state element yang berubah
+                                dbHelper.updateStatusTugas(
+                                    mapList[index]['id'], 'selesai');
+                                reloaduserData();
+                              },
+                              child: Text("Set Selesai")))
                     ],
                   ),
                 ),
