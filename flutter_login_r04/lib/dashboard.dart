@@ -189,7 +189,13 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Color getColor(int index) {
-    if (this._listTugas[index]['status'] == 'belum')
+    DateTime today = DateTime.now();
+    bool isLewatWaktu = false;
+    if (today.isAfter(DateTime.parse(_listTugas[index]['deadline']).add(Duration(
+        days:
+            1)))) //tambah satu krn batas wajtu hari yg sama tapi pkl 23.59, sehingga mendekati hari berikutnya
+      isLewatWaktu = true;
+    if (this._listTugas[index]['status'] == 'belum' && isLewatWaktu == false)
       return Colors.orange;
     else if (this._listTugas[index]['status'] == 'selesai')
       return Colors.green;
