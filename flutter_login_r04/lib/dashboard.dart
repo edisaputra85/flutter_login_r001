@@ -9,32 +9,30 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  User user;
-  int userId;
-  List<Map<String, dynamic>> mapList;
+  User _user;
+  int _userId;
+
+  //int userId;
+  List<Map<String, dynamic>> _listTugas;
   DbHelper dbHelper = new DbHelper();
 
   void reloaduserData() {
-    dbHelper.selectUserOnId(this.userId).then((mapList) {
-      mapList.forEach((element) {
+    dbHelper.selectUserOnId(_userId).then((userList) {
+      dbHelper.selectAllTugas().then((listTugas) {
         setState(() {
-          this.user = User.fromMap(element);
+          _listTugas = listTugas;
+          _user = User.fromMap(userList.elementAt(0));
         });
-      });
-    });
-    dbHelper.selectAllTugas().then((mapList) {
-      setState(() {
-        this.mapList = mapList;
       });
     });
   }
 
   ListView createListView() {
-    if (this.mapList.length != null) {
+    if (_listTugas != null) {
       return ListView.builder(
         shrinkWrap:
             true, //harus tambahkan shrinkwrap, listview tidak boleh dibungkus dengan singlechildscroolview
-        itemCount: mapList.length,
+        itemCount: _listTugas.length,
         itemBuilder: (context, index) {
           return Container(
               margin: EdgeInsets.all(2),
@@ -49,7 +47,7 @@ class _DashboardState extends State<Dashboard> {
                           Expanded(child: Text('Matakuliah ')),
                           Expanded(
                             flex: 2,
-                            child: Text(mapList[index]['matakuliah']),
+                            child: Text(_listTugas[index]['matakuliah']),
                           )
                         ],
                       ),
@@ -59,7 +57,7 @@ class _DashboardState extends State<Dashboard> {
                           Expanded(
                             flex: 2,
                             child: Text(DateFormat("dd MMMM y").format(
-                                DateTime.parse(mapList[index]['deadline']))),
+                                DateTime.parse(_listTugas[index]['deadline']))),
                           )
                         ],
                       ),
@@ -69,7 +67,7 @@ class _DashboardState extends State<Dashboard> {
                           Expanded(
                             flex: 2,
                             child: Text(
-                              mapList[index]['uraian_tugas'],
+                              _listTugas[index]['uraian_tugas'],
                               maxLines: 5,
                             ),
                           )
@@ -80,7 +78,7 @@ class _DashboardState extends State<Dashboard> {
                           Expanded(child: Text('Status Tugas ')),
                           Expanded(
                             flex: 2,
-                            child: Text(mapList[index]['status']),
+                            child: Text(_listTugas[index]['status']),
                           )
                         ],
                       ),
@@ -90,7 +88,7 @@ class _DashboardState extends State<Dashboard> {
                               onPressed: () {
                                 //update record tugas berdasarkan id menjadi selesai dan set state element yang berubah
                                 dbHelper.updateStatusTugas(
-                                    mapList[index]['id'], 'selesai');
+                                    _listTugas[index]['id'], 'selesai');
                                 reloaduserData();
                               },
                               child: Text("Set Selesai")))
@@ -108,8 +106,8 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     //terima argument dalam bentuk map
-    this.userId = ModalRoute.of(context).settings.arguments;
-    reloaduserData();
+    _userId = ModalRoute.of(context).settings.arguments;
+    if (_user == null) reloaduserData();
 
     return Scaffold(
       appBar: AppBar(
@@ -132,16 +130,16 @@ class _DashboardState extends State<Dashboard> {
                   Container(
                     margin: EdgeInsets.only(bottom: 15),
                     child: Text(
-                      "Welcome " + this.user.username,
+                      "Welcome " + (_user != null ? _user.username : 'user'),
                       style: TextStyle(color: Colors.white, fontSize: 24),
                     ),
                   ),
                   Text(
-                    "User Id : $userId",
+                    "User Id : $_userId",
                     style: TextStyle(fontSize: 16),
                   ),
                   Text(
-                    "User Email : " + user.email,
+                    "User Email : " + (_user != null ? _user.email : 'email'),
                     style: TextStyle(fontSize: 16),
                   ),
                 ],
@@ -155,7 +153,7 @@ class _DashboardState extends State<Dashboard> {
             onTap: () {
               Navigator.pop(context); //tutup drawer
               Navigator.pushNamed(context, '/settings',
-                  arguments: userId); //navigasi ke settings
+                  arguments: _userId); //navigasi ke settings
             },
           ),
           ListTile(
@@ -180,7 +178,7 @@ class _DashboardState extends State<Dashboard> {
           )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/tambahtugas', arguments: userId);
+          Navigator.pushNamed(context, '/tambahtugas', arguments: _userId);
         },
         child: Icon(
           Icons.add,
@@ -191,9 +189,9 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Color getColor(int index) {
-    if (this.mapList[index]['status'] == 'belum')
+    if (this._listTugas[index]['status'] == 'belum')
       return Colors.orange;
-    else if (this.mapList[index]['status'] == 'selesai')
+    else if (this._listTugas[index]['status'] == 'selesai')
       return Colors.green;
     else
       return Colors.red;
