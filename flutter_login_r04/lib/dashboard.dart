@@ -12,7 +12,6 @@ class _DashboardState extends State<Dashboard> {
   User _user;
   int _userId;
 
-  //int userId;
   List<Map<String, dynamic>> _listTugas;
   DbHelper dbHelper = new DbHelper();
 
@@ -87,11 +86,28 @@ class _DashboardState extends State<Dashboard> {
                           child: ElevatedButton(
                               onPressed: () {
                                 //update record tugas berdasarkan id menjadi selesai dan set state element yang berubah
-                                dbHelper.updateStatusTugas(
-                                    _listTugas[index]['id'], 'selesai');
-                                reloaduserData();
+                                DateTime today = DateTime.now();
+                                bool isLewatWaktu = false;
+                                if (today.isAfter(DateTime.parse(
+                                        _listTugas[index]['deadline'])
+                                    .add(Duration(
+                                        days:
+                                            1)))) //tambah satu krn batas wajtu hari yg sama tapi pkl 23.59, sehingga mendekati hari berikutnya
+                                  isLewatWaktu = true;
+
+                                if (_listTugas[index]['status'] == 'belum' &&
+                                    isLewatWaktu == false) {
+                                  dbHelper.updateStatusTugas(
+                                      _listTugas[index]['id'], 'selesai');
+                                  reloaduserData();
+                                } else if (_listTugas[index]['status'] ==
+                                    'selesai') {
+                                  dbHelper.updateStatusTugas(
+                                      _listTugas[index]['id'], 'belum');
+                                  reloaduserData();
+                                }
                               },
-                              child: Text("Set Selesai")))
+                              child: Text(getButtonLabel(index))))
                     ],
                   ),
                 ),
@@ -201,5 +217,12 @@ class _DashboardState extends State<Dashboard> {
       return Colors.green;
     else
       return Colors.red;
+  }
+
+  String getButtonLabel(int index) {
+    if (_listTugas[index]['status'] == 'belum')
+      return 'Set Selesai';
+    else
+      return 'Set Belum';
   }
 }
