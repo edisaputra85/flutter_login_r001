@@ -99,7 +99,7 @@ class _DashboardState extends State<Dashboard> {
                                     isLewatWaktu == false) {
                                   dbHelper.updateStatusTugas(
                                       _listTugas[index]['id'], 'selesai');
-                                  reloaduserData();
+                                  reloaduserData(); //mapList bersifat read-only, sekali diisi tidak bisa diupdate karena ukuran data yg besar disebabkan menyimpan objek, map harus dclone untuk mengupdate datanya
                                 } else if (_listTugas[index]['status'] ==
                                     'selesai') {
                                   dbHelper.updateStatusTugas(
