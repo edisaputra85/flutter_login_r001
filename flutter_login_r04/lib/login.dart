@@ -96,7 +96,10 @@ class _LoginState extends State<Login> {
                                       SnackBar(
                                           content: Text("Login Sukses"),
                                           backgroundColor: Colors.green));
-                                  Navigator.pushNamed(context, '/dashboard');
+                                  //baca record user yang login
+                                  Map<String, dynamic> recordUser = mapList[0];
+                                  Navigator.pushNamed(context, '/dashboard',
+                                      arguments: recordUser);
                                 } else
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
