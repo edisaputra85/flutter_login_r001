@@ -22,7 +22,7 @@ class DbHelper {
     String path = directory.path + 'notes.db'; //path database
     //perintah untuk hapus database: await deleteDatabase(path);
     // Delete the database
-    // await deleteDatabase(path);
+    //await deleteDatabase(path);
 
     //method openDatabase akan create sebuah database dan menyimpannya pada path
     var notesDatabase = openDatabase(path, version: 1, onCreate: _createDb);
