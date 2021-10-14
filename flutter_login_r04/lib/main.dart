@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login_r04/settings2.dart';
 import 'dashboard.dart';
 import 'login.dart';
 import 'register.dart';
@@ -13,7 +12,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
           // This is the theme of your application.
@@ -32,7 +30,6 @@ class MyApp extends StatelessWidget {
           '/login': (context) => Login(),
           '/register': (context) => Register(),
           '/dashboard': (context) => Dashboard(),
-          '/setting': (context) => Settings(),
         });
   }
 }
